@@ -1,5 +1,5 @@
 import * as vscode from "vscode"
-import { getHostBridgeProvider } from "@hosts/host-providers"
+import { openExternal } from "@utils/env"
 
 /**
  * Detects potential AI-generated code omissions in the given file content.
@@ -48,14 +48,11 @@ export function showOmissionWarning(originalFileContent: string, newFileContent:
 			)
 			.then((selection) => {
 				if (selection === "Follow this guide to fix the issue") {
-					const hostBridge = getHostBridgeProvider()
-					hostBridge.envClient
-						.openExternal({
-							value: "https://github.com/cline/cline/wiki/Troubleshooting-%E2%80%90-Cline-Deleting-Code-with-%22Rest-of-Code-Here%22-Comments",
-						})
-						.catch((error) => {
-							console.error("Error opening troubleshooting guide:", error)
-						})
+					openExternal(
+						"https://github.com/cline/cline/wiki/Troubleshooting-%E2%80%90-Cline-Deleting-Code-with-%22Rest-of-Code-Here%22-Comments",
+					).catch((error) => {
+						console.error("Error opening troubleshooting guide:", error)
+					})
 				}
 			})
 	}

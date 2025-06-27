@@ -11,7 +11,7 @@ import { getLatestTerminalOutput } from "@integrations/terminal/get-latest-outpu
 import { getCommitInfo } from "@utils/git"
 import { getWorkingState } from "@utils/git"
 import { FileContextTracker } from "../context/context-tracking/FileContextTracker"
-import { getHostBridgeProvider } from "@hosts/host-providers"
+import { openExternal } from "@utils/env"
 
 export function openMention(mention?: string): void {
 	if (!mention) {
@@ -36,8 +36,7 @@ export function openMention(mention?: string): void {
 	} else if (mention === "terminal") {
 		vscode.commands.executeCommand("workbench.action.terminal.focus")
 	} else if (mention.startsWith("http")) {
-		const hostBridge = getHostBridgeProvider()
-		hostBridge.envClient.openExternal({ value: mention }).catch((error) => {
+		openExternal(mention).catch((error) => {
 			console.error("Error opening external URL:", error)
 		})
 	}

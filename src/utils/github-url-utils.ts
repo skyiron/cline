@@ -17,8 +17,7 @@ import * as vscode from "vscode"
 import * as cp from "child_process"
 import * as os from "os"
 import * as util from "util"
-import { writeTextToClipboard } from "@/utils/env"
-import { getHostBridgeProvider } from "@hosts/host-providers"
+import { writeTextToClipboard, openExternal } from "@/utils/env"
 
 /**
  * Creates a properly encoded GitHub issue URL.
@@ -142,16 +141,15 @@ export async function openUrlInBrowser(url: string): Promise<void> {
 	} catch (error) {
 		console.error(`OS commands failed: ${error}`)
 
-		// First fallback: Try host bridge openExternal
+		// First fallback: Try openExternal utility
 		// Note: This will likely have encoding issues per https://github.com/microsoft/vscode/issues/85930
 		// but we include it as a fallback in case OS commands completely fail
 		try {
-			const hostBridge = getHostBridgeProvider()
-			await hostBridge.envClient.openExternal({ value: url })
-			console.log("Opened URL with host bridge openExternal (note: URL encoding may be affected)")
+			await openExternal(url)
+			console.log("Opened URL with openExternal utility (note: URL encoding may be affected)")
 			return
-		} catch (hostBridgeError) {
-			console.error(`Error with host bridge openExternal: ${hostBridgeError}`)
+		} catch (openExternalError) {
+			console.error(`Error with openExternal utility: ${openExternalError}`)
 
 			// Last fallback: Show a message with instructions
 			vscode.window

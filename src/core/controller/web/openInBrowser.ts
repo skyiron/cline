@@ -1,6 +1,6 @@
 import { Controller } from ".."
 import { Empty, StringRequest } from "../../../shared/proto/common"
-import { getHostBridgeProvider } from "@hosts/host-providers"
+import { openExternal } from "@utils/env"
 
 /**
  * Opens a URL in the user's default browser
@@ -11,8 +11,7 @@ import { getHostBridgeProvider } from "@hosts/host-providers"
 export async function openInBrowser(controller: Controller, request: StringRequest): Promise<Empty> {
 	try {
 		if (request.value) {
-			const hostBridge = getHostBridgeProvider()
-			await hostBridge.envClient.openExternal(request)
+			await openExternal(request.value)
 		}
 		return Empty.create()
 	} catch (error) {
