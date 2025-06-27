@@ -1,6 +1,6 @@
-import * as vscode from "vscode"
 import { Controller } from ".."
 import { Empty, StringRequest } from "../../../shared/proto/common"
+import { getHostBridgeProvider } from "@hosts/host-providers"
 
 /**
  * Opens a URL in the user's default browser
@@ -11,7 +11,8 @@ import { Empty, StringRequest } from "../../../shared/proto/common"
 export async function openInBrowser(controller: Controller, request: StringRequest): Promise<Empty> {
 	try {
 		if (request.value) {
-			await vscode.env.openExternal(vscode.Uri.parse(request.value))
+			const hostBridge = getHostBridgeProvider()
+			await hostBridge.envClient.openExternal(request)
 		}
 		return Empty.create()
 	} catch (error) {
